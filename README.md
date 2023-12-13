@@ -43,7 +43,7 @@ async function getTemplateContent(name) {
 
 The following function is responsible for "creating a new Person". There is no state management in the application and none on the variables are updated. The only responsibility of this function is instacing a new `person.html` card and filling its inputs with correspoing `person.name` and `person.surname` values.
 
-Unintuitevely, **events** cannot be set to the instantiated `HTMLElement` before it was appended. Even though the can, they get **unset** after the element gets appended. In order to overcome such tricky behavior, events must be set for the actual `HTMLElement`. Consider the `deleteButton` example below.
+Unintuitevely, **events** cannot be set to the instantiated `HTMLElement` before it was appended. Even though the can, they get **unset** after the element gets appended. In order to overcome such tricky behavior, events must be set for the actual `HTMLElement` **after** it gets appended. Consider the `deleteButton` example below.
 
 ```js
 /**
