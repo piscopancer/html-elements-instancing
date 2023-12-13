@@ -10,12 +10,14 @@ Some code details are explained as you read further. The rest (code I did not fi
 
 ### Reading HTML contents
 
-The code snippet below includes a function that reads the so-called "template" as string before making it an actual `HTMLElement`.
+The function below reads the `*.html` files in the `elements` folder as string. Every file contains the only `<template>...</template>` with whatever contents. The idea is to "parse" the contents as a string by appending them to a temporary parent `div`, cloning the content's (template's) children and returning them.
 
 ```js
-async function getTemplateContent(name) {
+async function htmlElementsFromTemplate(name) {
   const content = await fetch(`/elements/${name}.html`).then(async (res) => await res.text())
-  return new DOMParser().parseFromString(content, 'text/html').body.firstChild
+  const tempParent = document.createElement('div')
+  tempParent.innerHTML = content
+  return tempParent.firstChild.content.cloneNode(true).children
 }
 ```
 
@@ -32,9 +34,9 @@ As you add more `HTML` files in the element, should you consider updating jsdoc 
 
 /**
  * @param {TTemplatesIds} name
- * @returns {HTMLFormElement}
+ * @returns {HTMLCollection}
  */
-async function getTemplateContent(name) {
+async function htmlElementsFromTemplate(name) {
   // ...
 }
 ```
@@ -42,6 +44,20 @@ async function getTemplateContent(name) {
 ## Adding a person
 
 The following function is responsible for "creating a new Person". There is no state management in the application and none on the variables are updated. The only responsibility of this function is instacing a new `person.html` card and filling its inputs with correspoing `person.name` and `person.surname` values.
+
+Because `htmlElementsFromTemplate` function returns a collection of `HTMLElement`'s, as there may be multiple of them inside `template` tag...
+
+```html
+<!-- elements/some-teplate.html -->
+<template>
+  <!-- We need to work with this form element afterwards and we do not care about paragraphs. -->
+  <form></form>
+  <p></p>
+  <p></p>
+</template>
+```
+
+... we should get a particular element from this template by its index or artificially limit ourselves to creating only one child element. You choose.
 
 Unintuitevely, **events** cannot be set to the instantiated `HTMLElement` before it was appended. Even though the can, they get **unset** after the element gets appended. In order to overcome such tricky behavior, events must be set for the actual `HTMLElement` **after** it gets appended. Consider the `deleteButton` example below.
 
@@ -51,19 +67,16 @@ Unintuitevely, **events** cannot be set to the instantiated `HTMLElement` before
  */
 async function addPerson(person) {
   const peopleList = document.querySelector('ul#people')
-  const _personForm = await getTemplateContent('person')
+  const _personForm = (await htmlElementsFromTemplate('person'))[0]
   _personForm.id = crypto.randomUUID()
   _personForm.elements['person-name'].value = person.name
   _personForm.elements['person-surname'].value = person.surname
-  const personForm = _personForm.cloneNode(true)
-  peopleList.append(personForm)
 
-  /** @type {HTMLButtonElement} */
-  const deleteButton = personForm.elements['delete']
-  deleteButton.onclick = (e) => {
-    e.preventDefault()
-    console.log(_personForm.id)
+  peopleList.append(_personForm)
+
+  const deleteButton = /** @type {HTMLButtonElement} */ (_personForm.elements['delete'])
+  deleteButton.addEventListener('click', () => {
     document.getElementById(_personForm.id).remove()
-  }
+  })
 }
 ```
