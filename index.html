@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+    <script defer type="module" src="index.js"></script>
+  </head>
+  <body class="max-w-screen bg-zinc-200">
+    <main class="mx-4">
+      <h1 class="my-4 font-bold text-2xl">People</h1>
+      <ul id="people" class="flex flex-col gap-2 mb-4"></ul>
+      <form name="add-person">
+        <input type="text" name="name" placeholder="Name" class="outline-none bg-zinc-100 rounded-t-sm px-2 py-1 caret-orange-500 border-b-2 border-zinc-300 focus-visible:border-orange-500" />
+        <input type="text" name="surname" placeholder="Surname" class="outline-none bg-zinc-100 rounded-t-sm px-2 py-1 caret-orange-500 border-b-2 border-zinc-300 focus-visible:border-orange-500" />
+        <button name="add" type="button" class="px-4 py-1 rounded-t-sm border-b-2 border-orange-600 bg-orange-500 hover:bg-orange-400 text-white font-bold">Add person</button>
+      </form>
+    </main>
+  </body>
+</html>
